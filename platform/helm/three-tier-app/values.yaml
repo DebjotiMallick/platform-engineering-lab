@@ -1,0 +1,100 @@
+frontend:
+  replicaCount: 1
+  image:
+    repository: debjotimallick/todoapp-frontend
+    tag: "0.0.1"
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      memory: "128Mi"
+      cpu: "500m"
+  service:
+    port: 80
+    targetPort: 80
+
+backend:
+  replicaCount: 1
+  image:
+    repository: debjotimallick/todoapp-backend
+    tag: "0.0.1"
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      memory: "128Mi"
+      cpu: "500m"
+  service:
+    port: 8000
+    targetPort: 8000
+
+postgresql:
+  enabled: true
+  image:
+    repository: bitnamilegacy/postgresql
+    tag: latest
+  auth:
+    username: todo_user
+    password: todo_password
+    database: todo_db
+  external:
+    enabled: false
+    host: mydb.example.com
+    port: 5432
+    username: external_user
+    password: external_password
+    database: external_db
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  host: "todo.debjotimallick.store"
+  tls:
+    - secretName: ""
+      hosts:
+        - ""
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+
+volumeMounts: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

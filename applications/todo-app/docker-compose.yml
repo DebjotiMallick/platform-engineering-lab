@@ -1,0 +1,42 @@
+services:
+  frontend:
+    container_name: todoapp-frontend
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - todoapp-network
+
+  backend:
+    container_name: todoapp-backend
+    build:
+      context: ./backend
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@database:5432/tododb
+    networks:
+      - todoapp-network
+
+  database:
+    container_name: todoapp-database
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tododb
+    networks:
+      - todoapp-network
+
+volumes:
+  postgres_data:
+
+
+networks:
+  todoapp-network:
+    driver: bridge
